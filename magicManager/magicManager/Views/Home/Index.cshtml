@@ -1,0 +1,29 @@
+﻿@{
+    ViewBag.Title = "Magic Manager";
+}
+
+<div class="jumbotron">
+    <h1>Magic Manager</h1>
+    <p class="lead">Bienvenue! Cette application vous aidera à gérer votre stock et vos ventes sur MagicCardMarket , une fois que vous serez identifiés!</p>
+    <p>Rassurez vous, tout est très simple d'usage.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Vos mises à jour en un clin d'oeil</h2>
+        <p>
+            Nous voulons vous permettre de vérifier ce qu'il manque à votre magasin, que ce soit au niveau de votre stock ou une comparaison de vos prix avec ceux du marché actuel.
+            Vous allez vite réaliser que notre aide vous est indispensable. Et c'est pour cette raison que nous avons misé sur la simplicité.
+        </p>
+    </div>
+    <div class="col-md-4">
+        <h2>Exportabilité et Efficacité</h2>
+        <p>
+            Nous sommes parfaitement conscients de la nécessité d'avoir accès à vos fichiers partout. C'est pourquoi au-delà de notre application, il vous sera proposé de télécharger les listes de vos cartes 
+            ou de les enregistrer au format Excel.
+        </p>
+    </div>
+    <div class="col-md-4">
+        @Html.Partial("_RequestsPartial")
+    </div>
+</div>

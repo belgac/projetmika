@@ -1,0 +1,16 @@
+﻿@using magicManager.Models.Articles
+@model List<Article>
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Listing des Articles</h2>
+
+            @foreach (var article in @Model)
+            {
+                @Html.Partial("_ArticlePartial", article)
+            }
+        </div>
+        <div class="col-md-4">
+            @Html.Partial("_RequestsPartial");
+        </div>
+    </div>
+

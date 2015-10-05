@@ -1,0 +1,14 @@
+﻿@model magicManager.Models.Account.Account
+<div class="col-md-8">
+<br />
+    <div> 
+        <h2>Verification de votre compte utilisateur</h2>
+        <p>Le nom d'utilisateur de votre compte sur MKM est @Model.username .</p>
+        <br />
+        <p>Si vous pensez qu'il ne s'agit pas de votre compte, c'est bien dommage car c'est celui qui correspond à cette application.</p>
+    </div>
+</div>
+
+<div class="col-md-4">
+    @Html.Partial("_RequestsPartial");
+</div>

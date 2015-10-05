@@ -1,0 +1,28 @@
+﻿@using magicManager.Models.Expansion
+@model List<Expansion>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Les éditions</title>
+</head>
+<body>
+    <div class="row"> 
+        <div class="col-md-8">
+            <h2>Editions existantes</h2>
+
+            @Html.DropDownList("ddl");
+
+            @*@foreach (var expansion in @Model)
+            {
+                @Html.Partial("_ExpansionPartial", expansion)
+            }*@
+        </div>
+        <div class="col-md-4">
+            @Html.Partial("_RequestsPartial");
+        </div>
+    </div>
+</body>
+</html>

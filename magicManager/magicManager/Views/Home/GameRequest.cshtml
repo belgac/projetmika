@@ -1,0 +1,87 @@
+﻿@using magicManager.Models.Game
+@model List<Game>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Jeux existants</h2>
+
+        @Html.DropDownList("ddl")
+
+    </div>
+
+    <div class="col-md-4">
+        <h2>Editions pour ce jeu</h2>
+
+        <select name="expansion" id="expansion"></select>
+
+        <button type="button" id="findArticle">submit</button>
+    </div>
+
+    <div class="col-md-4">
+        @Html.Partial("_RequestsPartial");
+    </div>
+</div>
+<div class="articles row">
+
+</div>
+@section scripts{
+    <script type="text/javascript">
+    $(function () {
+        $("#ddl").change(function () {
+                 var selectedItem = $(this).val();
+                 var ddlExpansion = $("#expansion");
+             $.ajax({
+                 cache: false,
+                 type: "GET",
+                 url: "@(Url.Action("GetExpansionById","Expansion"))",
+                 data: { "idGame": selectedItem },
+                    success: function (data) {
+                        ddlExpansion.html('');
+                        $.each(data, function (id, option) {
+                            ddlExpansion.append($('<option></option>').val(option.id).html(option.name));
+                        });
+
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to retrieve states level zero.');
+                    }
+                });
+            });
+    });
+        $(document).ready(function () {
+            var ddlExpansion = $("#expansion");
+            $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: "@(Url.Action("GetExpansionById","Expansion"))",
+                    data: { "idGame": $("#ddl").val() },
+                    success: function (data) {
+                    ddlExpansion.html('');
+                    $.each(data, function (id, option) {
+                        ddlExpansion.append($('<option></option>').val(option.id).html(option.name));
+                    });
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Failed to retrieve states level one.');
+                }
+            });
+            $("#findArticle").click(function () {
+                
+                $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: "@(Url.Action("ProductInExpansionRequest", "Product"))",
+                    data: { "idGame": $("#ddl").val(), "expansionName": $("#expansion option:selected").text() },
+                success: function (data) {
+                    $(".articles").html(data);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Failed to retrieve states level two.');
+                }
+            });
+            });
+        });
+    </script>
+
+}

@@ -1,0 +1,11 @@
+﻿@using magicManager.Models
+@model List<Product>
+
+
+            @foreach (var product in Model)
+            {
+                <div class="col-md-3">
+                @Html.Partial("_ProductPartial", product)
+                    </div>
+            }
+
