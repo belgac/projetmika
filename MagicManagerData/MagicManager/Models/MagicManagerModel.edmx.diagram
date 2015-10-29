@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7d89bc7ff0164d558f6c97e665ad8c71" Name="Diagram1" ZoomLevel="94">
+        <EntityTypeShape EntityType="MagicManagerDataModel.Article" Width="1.5" PointX="7.5" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="MagicManagerDataModel.DailyPrice" Width="1.5" PointX="9.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MagicManagerDataModel.Expansion" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MagicManagerDataModel.Game" Width="1.5" PointX="0.75" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MagicManagerDataModel.Language" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MagicManagerDataModel.Product" Width="1.5" PointX="5.125" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MagicManagerDataModel.WorkerAction" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
+        <AssociationConnector Association="MagicManagerDataModel.fk_articlesDailyprice" ManuallyRouted="false" />
+        <AssociationConnector Association="MagicManagerDataModel.FK_productArticle" ManuallyRouted="false" />
+        <AssociationConnector Association="MagicManagerDataModel.FK_expansionProduct" ManuallyRouted="false" />
+        <AssociationConnector Association="MagicManagerDataModel.fk_gameExpansion" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
