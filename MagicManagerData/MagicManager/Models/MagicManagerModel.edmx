@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="MagicManagerDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="MagicManagerDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Article">
           <Key>
             <PropertyRef Name="ArticleId" />
@@ -117,6 +117,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_languageArticle">
+          <End Role="Language" Type="Self.Language" Multiplicity="1" />
+          <End Role="Article" Type="Self.Article" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Language">
+              <PropertyRef Name="LanguageId" />
+            </Principal>
+            <Dependent Role="Article">
+              <PropertyRef Name="LanguageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_productArticle">
           <End Role="Product" Type="Self.Product" Multiplicity="1" />
           <End Role="Article" Type="Self.Article" Multiplicity="*" />
@@ -149,13 +161,16 @@
             <End Role="Game" EntitySet="Game" />
             <End Role="Expansion" EntitySet="Expansion" />
           </AssociationSet>
+          <AssociationSet Name="FK_languageArticle" Association="Self.FK_languageArticle">
+            <End Role="Language" EntitySet="Language" />
+            <End Role="Article" EntitySet="Article" />
+          </AssociationSet>
           <AssociationSet Name="FK_productArticle" Association="Self.FK_productArticle">
             <End Role="Product" EntitySet="Product" />
             <End Role="Article" EntitySet="Article" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MagicManagerDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -175,6 +190,7 @@
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="DailyPrices" Relationship="Self.fk_articlesDailyprice" FromRole="Article" ToRole="DailyPrices" />
           <NavigationProperty Name="Product" Relationship="Self.FK_productArticle" FromRole="Article" ToRole="Product" />
+          <NavigationProperty Name="Language" Relationship="MagicManagerDataModel.FK_languageArticle" FromRole="Article" ToRole="Language" />
         </EntityType>
         <EntityType Name="DailyPrice">
           <Key>
@@ -219,6 +235,7 @@
           <Property Name="LanguageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="1" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="WorkerEditTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Articles" Relationship="MagicManagerDataModel.FK_languageArticle" FromRole="Language" ToRole="Article" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -315,7 +332,23 @@
             <End Role="Game" EntitySet="Games" />
             <End Role="Expansion" EntitySet="Expansions" />
           </AssociationSet>
+          <AssociationSet Name="FK_languageArticle" Association="MagicManagerDataModel.FK_languageArticle">
+            <End Role="Language" EntitySet="Languages" />
+            <End Role="Article" EntitySet="Articles" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="FK_languageArticle">
+          <End Type="MagicManagerDataModel.Language" Role="Language" Multiplicity="1" />
+          <End Type="MagicManagerDataModel.Article" Role="Article" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Language">
+              <PropertyRef Name="LanguageId" />
+            </Principal>
+            <Dependent Role="Article">
+              <PropertyRef Name="LanguageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

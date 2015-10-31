@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MagicManagerService;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -53,7 +55,7 @@ namespace MagicManager.Models
             return StreamToText(response);
         }
 
-        public string GameRequest()
+        public IEnumerable<Game> GameRequest()
         {
             //retourne la liste des jeux au format Json
             string method = "GET";
@@ -65,14 +67,17 @@ namespace MagicManager.Models
             request.Method = method;
 
             HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            return StreamToText(response);
+            string text = StreamToText(response);
 
+            if (text == null) return null;
+            RootGame root = JsonConvert.DeserializeObject<RootGame>(text);
+            return root.game as IEnumerable<Game>;
         }
 
-        public string ArticleRequest(int idArticle)
+        public IEnumerable<Article> ArticleRequest(int idArticle)
         {
-            //retourne l'article spécifié via IdArticle
-            string method = "GET";
+        //retourne l'article spécifié via IdArticle
+        string method = "GET";
             string url = "https://www.mkmapi.eu/ws/v1.1/output.json/articles/" + idArticle;
 
             HttpWebRequest request = WebRequest.CreateHttp(url) as HttpWebRequest;
@@ -81,11 +86,15 @@ namespace MagicManager.Models
             request.Method = method;
 
             HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            return StreamToText(response);
+            string text = StreamToText(response);
+
+            if (text == null) return null;
+            RootArticle root = JsonConvert.DeserializeObject<RootArticle>(text);
+            return root.article as IEnumerable<Article>;
 
         }
 
-        public string ProductInExpansionRequest(int idGame, string expansionName)
+        public IEnumerable<Product> ProductInExpansionRequest(int idGame, string expansionName)
         {
             //retourne la liste des articles contenus dans l'expansion spécifiée du jeu spécifié.
             //par défaut l'idGame peut être mis sur "1", index de MTG, jeu phare du projet
@@ -98,11 +107,15 @@ namespace MagicManager.Models
             request.Method = method;
 
             HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            return StreamToText(response);
+             string text = StreamToText(response);
+
+            if (text == null) return null;
+            RootProduct root = JsonConvert.DeserializeObject<RootProduct>(text);
+            return root.product as IEnumerable<Product>;
         }
 
 
-        public string ProductRequest(int id)
+        public IEnumerable<Product> ProductRequest(int id)
         {
             //retourne le produit spécifié par l'Id. Pour la différence complête product/article, 
             //se reporter à la documentation ou à l'API MKM.
@@ -115,14 +128,14 @@ namespace MagicManager.Models
             request.Method = method;
 
             HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            // XmlDocument doc = new XmlDocument();
-            // doc.Load(response.GetResponseStream());
-            // proceed further
+            string text = StreamToText(response);
 
-            return StreamToText(response);
+            if (text == null) return null;
+            RootProduct root = JsonConvert.DeserializeObject<RootProduct>(text);
+            return root.product as IEnumerable<Product>;
         }
 
-        public string ExpansionRequest(int id)
+        public IEnumerable<Expansion> ExpansionRequest(int id)
         {
 
             //retourne l'expansion spécifié par l'id.
@@ -136,11 +149,15 @@ namespace MagicManager.Models
             request.Method = method;
 
             HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            return StreamToText(response);
+            string text = StreamToText(response);
+
+            if (text == null) return null;
+            RootExpansion root = JsonConvert.DeserializeObject<RootExpansion>(text);
+            return root.expansion as IEnumerable<Expansion>;
         }
 
         
-        public string StockRequest()
+        public IEnumerable<Article> StockRequest()
         {
             //Retourne l'ensemble du stock de l'user. 
             //utile pour suivi des ventes et statistiques.
@@ -154,7 +171,12 @@ namespace MagicManager.Models
             request.Method = method;
 
             HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            return StreamToText(response);
+            string text = StreamToText(response);
+
+            if (text == null) return null;
+            RootArticle root = JsonConvert.DeserializeObject<RootArticle>(text);
+            return root.article as IEnumerable<Article>;
+
         }
 
     }

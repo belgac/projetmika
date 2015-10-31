@@ -1,5 +1,5 @@
 ﻿using MagicManager.dal.Interfaces;
-using MagicManager.Models;
+using MagicManagerClassLibrary.dal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +14,6 @@ namespace MagicManager.dal.Repositories
             var q = FindBy(a => a.ArticleId == id);
             return q.Any();
         }
-
+        
     }
 }

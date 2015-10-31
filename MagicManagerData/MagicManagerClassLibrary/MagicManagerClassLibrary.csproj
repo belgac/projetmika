@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>721c7605-921c-46c8-9aac-fd9b290253a0</ProjectGuid>
+    <ProjectGuid>{721C7605-921C-46C8-9AAC-FD9B290253A0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MagicManagerClassLibrary</RootNamespace>
@@ -30,24 +30,40 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System"/>
-    
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
-    <Reference Include="Microsoft.CSharp"/>
-    
-    <Reference Include="System.Data"/>
-    
-    <Reference Include="System.Net.Http"/>
-    
-    <Reference Include="System.Xml"/>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="dal\Article.cs" />
+    <Compile Include="dal\DailyPrices.cs" />
+    <Compile Include="dal\Expansion.cs" />
+    <Compile Include="dal\Game.cs" />
+    <Compile Include="dal\Interfaces\IArticles.cs" />
+    <Compile Include="dal\Interfaces\IDailyPrices.cs" />
+    <Compile Include="dal\Interfaces\IGenericRepository.cs" />
+    <Compile Include="dal\Interfaces\IProducts.cs" />
+    <Compile Include="dal\Language.cs" />
+    <Compile Include="dal\Product.cs" />
+    <Compile Include="dal\Repositories\ArticleRepo.cs" />
+    <Compile Include="dal\Repositories\DailyPriceRepo.cs" />
+    <Compile Include="dal\Repositories\ExpansionRepo.cs" />
+    <Compile Include="dal\Repositories\GameRepo.cs" />
+    <Compile Include="dal\Repositories\GenericRepository.cs" />
+    <Compile Include="dal\Repositories\ProductRepo.cs" />
+    <Compile Include="dal\WorkerAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MagicManagerData\MagicManagerData.sqlproj">
+      <Project>{6849f6bf-a87a-49b7-9c44-9ccd267b6c6e}</Project>
+      <Name>MagicManagerData</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -57,5 +73,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
- </Project>
+</Project>

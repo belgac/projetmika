@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MagicManagerClassLibrary.dal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,8 @@ namespace MagicManager.dal.Interfaces
     interface IArticles
     {
         bool check(int id);
+
+        Article convert(string reponse);
+ 
     }
 }

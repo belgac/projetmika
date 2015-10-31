@@ -35,16 +35,6 @@ namespace MagicManager
             return repo.FindBy(a => a.ArticleId == id);
         }
 
-
-        // ESSAI DE METHODE POUR RECUPERER LES ARTICLES PAR PRIX.
-        // PEUT ETRE INUTILE
-        //[Route("api/article/dailyPrice/get")]
-        //public IQueryable<Article> Get(int id)
-        //{
-        //    var repo = new ArticleRepo();
-        //    return repo.FindBy(a => a.DailyPrices.FirstOrDefault() == id);
-        //}
-
         // GET api/<controller>/5
         //public string Get(int id)
         //{

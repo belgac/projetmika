@@ -16,6 +16,7 @@
         <AssociationConnector Association="MagicManagerDataModel.FK_productArticle" ManuallyRouted="false" />
         <AssociationConnector Association="MagicManagerDataModel.FK_expansionProduct" ManuallyRouted="false" />
         <AssociationConnector Association="MagicManagerDataModel.fk_gameExpansion" ManuallyRouted="false" />
+        <AssociationConnector Association="MagicManagerDataModel.FK_languageArticle" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

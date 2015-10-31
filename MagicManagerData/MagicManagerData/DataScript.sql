@@ -1,4 +1,5 @@
-﻿CREATE TABLE [dbo].[Product]
+﻿
+CREATE TABLE [dbo].[Product]
 (
 	[ProductId]			INT			Identity (1, 1) Not Null Primary KEY,
 	[ProductName]		NVARCHAR	NULL ,
@@ -27,7 +28,8 @@ CREATE TABLE [dbo].[Article]
 	[SiteWideCount]		Int			null,
 	[WorkerEditTime]	DateTime	null,
 	[ProductId]			INT			Not null,
-	CONSTRAINT FK_productArticle FOREIGN KEY (ProductId) REFERENCES [dbo].[Product](ProductId)
+	CONSTRAINT FK_productArticle FOREIGN KEY (ProductId) REFERENCES [dbo].[Product](ProductId),
+	CONSTRAINT FK_languageArticle FOREIGN KEY (LanguageId) REFERENCES [dbo].[Language](LanguageId)
   
 )
 

@@ -12,6 +12,9 @@ using System.IO;
 using MagicManager.Models;
 using System.Security.Cryptography;
 using System.Web.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using magicManager.Infrastructure;
 
 namespace MagicManagerService
 {
@@ -64,11 +67,11 @@ namespace MagicManagerService
             return StreamToText(response);
         }
 
-        public string ArticleRequest(int id)
+        public IEnumerable<ArticleMkm> ArticleRequest(int idArticle)
         {
             //retourne l'article spécifié via IdArticle
             string method = "GET";
-            string url = "https://www.mkmapi.eu/ws/v1.1/output.json/articles/" + id;
+            string url = "https://www.mkmapi.eu/ws/v1.1/output.json/articles/" + idArticle;
 
             HttpWebRequest request = WebRequest.CreateHttp(url) as HttpWebRequest;
             OAuthHeader header = new OAuthHeader();
@@ -76,13 +79,31 @@ namespace MagicManagerService
             request.Method = method;
 
             HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            return StreamToText(response);
+            string text = StreamToText(response);
 
-            //TODO: add check method to see if returned items already exist in tables, otherwise add them
+            if (text == null) return null;
+            RootArticle root = JsonConvert.DeserializeObject<RootArticle>(text);
+            return root.article as IEnumerable<ArticleMkm>;
+
+            //var collection = root.article as IEnumerable<Article>;
+
+            //foreach (Article item in collection)
+            //{
+            //    item.convertTo(mikaDbArticle article);
+            //   public bool check(int id)
+            //  {
+            //    using MagicManagerDataEntities
+            //    var q = FindBy(a => a.ArticleId == id);
+            //    return q.Any();
+            //  }
+            //    
+            //}
+
         }
 
-        public string ExpansionRequest(int id)
+        public IEnumerable<ExpansionMkm> ExpansionRequest(int id)
         {
+
             //retourne l'expansion spécifié par l'id.
             //Utile pour dropdowns lists du projet beta, sera certainement utile pour la configuration user
             string method = "GET";
@@ -94,12 +115,14 @@ namespace MagicManagerService
             request.Method = method;
 
             HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            return StreamToText(response);
+            string text = StreamToText(response);
 
-            //TODO: add check method to see if returned items already exist in tables, otherwise add them
+            if (text == null) return null;
+            RootExpansion root = JsonConvert.DeserializeObject<RootExpansion>(text);
+            return root.expansion as IEnumerable<ExpansionMkm>;
         }
 
-        public string GameRequest()
+        public IEnumerable<GameMkm> GameRequest()
         {
             //retourne la liste des jeux au format Json
             string method = "GET";
@@ -111,22 +134,16 @@ namespace MagicManagerService
             request.Method = method;
 
             HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            return StreamToText(response);
+            string text = StreamToText(response);
+
+            if (text == null) return null;
+            RootGame root = JsonConvert.DeserializeObject<RootGame>(text);
+            return root.game as IEnumerable<GameMkm>;
         }
-
-        //public CompositeType GetAccountUsingDataContract(CompositeType composite)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public CompositeType GetArticleUsingDataContract(CompositeType composite)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public string GetData(int value)
         {
-            var repo = new ArticleRepo();
+
 
             ///Appel API MKM
             ///collection = reponse de mkm
@@ -139,6 +156,92 @@ namespace MagicManagerService
             repo.GetAll();
             return string.Format("You entered: {0}", value);
         }
+
+        public IEnumerable<ProductMkm> ProductInExpansionRequest(int idGame, string expansionName)
+        {
+            //retourne la liste des articles contenus dans l'expansion spécifiée du jeu spécifié.
+            //par défaut l'idGame peut être mis sur "1", index de MTG, jeu phare du projet
+            string method = "GET";
+            string url = "https://www.mkmapi.eu/ws/v1.1/output.json/expansion/" + idGame + "/" + expansionName;
+
+            HttpWebRequest request = WebRequest.CreateHttp(url) as HttpWebRequest;
+            OAuthHeader header = new OAuthHeader();
+            request.Headers.Add(HttpRequestHeader.Authorization, header.getAuthorizationHeader(method, url));
+            request.Method = method;
+
+            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+            string text = StreamToText(response);
+
+            if (text == null) return null;
+            JObject jObject = JObject.Parse(text);
+            List<ProductMkm> products = new List<ProductMkm>();
+
+            //dans magicmanager original, cette méthode faisait la comparaison du prix MKM avec le prix magasin du user.
+            //Il était donc nécessaire d'appeler le stock pour vérifier si la carte existait, ainsi que son prix.
+            //IStockRepository stockRepo = new StockRepository();
+            //IEnumerable<Article> articles = stockRepo.GetStock();
+
+            foreach (JObject prd in jObject["card"])
+            {
+                ProductMkm product = JsonConvert.DeserializeObject<ProductMkm>(prd.ToString().Replace("\r\n", ""), new MyFuckingJsonConverter());
+                products.Add(product);
+            }
+
+            return products.OrderBy(m => m.name.productName) as IEnumerable<ProductMkm>;
+        }
+
+
+        public IEnumerable<ProductMkm> ProductRequest(int id)
+        {
+            //retourne le produit spécifié par l'Id. Pour la différence complête product/article, 
+            //se reporter à la documentation ou à l'API MKM.
+            string method = "GET";
+            string url = "https://www.mkmapi.eu/ws/v1.1/output.json/product/" + id;
+
+            HttpWebRequest request = WebRequest.CreateHttp(url) as HttpWebRequest;
+            OAuthHeader header = new OAuthHeader();
+            request.Headers.Add(HttpRequestHeader.Authorization, header.getAuthorizationHeader(method, url));
+            request.Method = method;
+
+            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+            string text = StreamToText(response);
+
+            if (text == null) return null;
+            RootProduct root = JsonConvert.DeserializeObject<RootProduct>(text);
+            return root.product as IEnumerable<ProductMkm>;
+        }
+
+        public IEnumerable<ArticleMkm> StockRequest()
+        {
+            //Retourne l'ensemble du stock de l'user. 
+            //utile pour suivi des ventes et statistiques.
+            //utile pour configuration via indice de priorité
+            string method = "GET";
+            string url = "https://www.mkmapi.eu/ws/v1.1/output.json/stock";
+
+            HttpWebRequest request = WebRequest.CreateHttp(url) as HttpWebRequest;
+            OAuthHeader header = new OAuthHeader();
+            request.Headers.Add(HttpRequestHeader.Authorization, header.getAuthorizationHeader(method, url));
+            request.Method = method;
+
+            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+            string text = StreamToText(response);
+
+            if (text == null) return null;
+            RootArticle root = JsonConvert.DeserializeObject<RootArticle>(text);
+            return root.article as IEnumerable<ArticleMkm>;
+
+        }
+
+        //public CompositeType GetAccountUsingDataContract(CompositeType composite)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public CompositeType GetArticleUsingDataContract(CompositeType composite)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         //public CompositeType GetDataUsingDataContract(CompositeType composite)
         //{
@@ -177,63 +280,6 @@ namespace MagicManagerService
         //{
         //    throw new NotImplementedException();
         //}
-
-        public string ProductByExpansionRequest(int idGame, string expansionName)
-        {
-            //retourne la liste des articles contenus dans l'expansion spécifiée du jeu spécifié.
-            //par défaut l'idGame peut être mis sur "1", index de MTG, jeu phare du projet
-            string method = "GET";
-            string url = "https://www.mkmapi.eu/ws/v1.1/output.json/expansion/" + idGame + "/" + expansionName;
-
-            HttpWebRequest request = WebRequest.CreateHttp(url) as HttpWebRequest;
-            OAuthHeader header = new OAuthHeader();
-            request.Headers.Add(HttpRequestHeader.Authorization, header.getAuthorizationHeader(method, url));
-            request.Method = method;
-
-            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            return StreamToText(response);
-        }
-
-        public string ProdutRequest(int id)
-        {
-            //retourne le produit spécifié par l'Id. Pour la différence complête product/article, 
-            //se reporter à la documentation ou à l'API MKM.
-            string method = "GET";
-            string url = "https://www.mkmapi.eu/ws/v1.1/output.json/product/" + id;
-
-            HttpWebRequest request = WebRequest.CreateHttp(url) as HttpWebRequest;
-            OAuthHeader header = new OAuthHeader();
-            request.Headers.Add(HttpRequestHeader.Authorization, header.getAuthorizationHeader(method, url));
-            request.Method = method;
-
-            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            // XmlDocument doc = new XmlDocument();
-            // doc.Load(response.GetResponseStream());
-            // proceed further
-
-            return StreamToText(response);
-
-            //TODO: add check method to see if returned items already exist in tables, otherwise add them
-        }
-
-        public string StockRequest()
-        {
-            //Retourne l'ensemble du stock de l'user. 
-            //utile pour suivi des ventes et statistiques.
-            //utile pour configuration via indice de priorité
-            string method = "GET";
-            string url = "https://www.mkmapi.eu/ws/v1.1/output.json/stock";
-
-            HttpWebRequest request = WebRequest.CreateHttp(url) as HttpWebRequest;
-            OAuthHeader header = new OAuthHeader();
-            request.Headers.Add(HttpRequestHeader.Authorization, header.getAuthorizationHeader(method, url));
-            request.Method = method;
-
-            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            return StreamToText(response);
-
-            //TODO: add check method to see if returned items already exist in tables, otherwise add them
-        }
 
         /// <summary>
         /// Class encapsulates tokens and secret to create OAuth signatures and return Authorization headers for web requests.
@@ -334,4 +380,5 @@ namespace MagicManagerService
             }
 
         }
+    }
 }

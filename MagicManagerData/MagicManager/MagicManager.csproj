@@ -161,6 +161,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\MyFuckinJsonConverter.cs" />
     <Compile Include="Models\Article.cs">
       <DependentUpon>MagicManagerModel.tt</DependentUpon>
     </Compile>

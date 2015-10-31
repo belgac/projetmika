@@ -14,8 +14,17 @@ namespace MagicManager.Models
     
     public partial class Language
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Language()
+        {
+            this.Articles = new HashSet<Article>();
+        }
+    
         public int LanguageId { get; set; }
         public string Name { get; set; }
         public Nullable<System.DateTime> WorkerEditTime { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Article> Articles { get; set; }
     }
 }
