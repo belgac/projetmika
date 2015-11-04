@@ -33,19 +33,19 @@ namespace MagicManagerService
         //CompositeType GetGameUsingDataContract(CompositeType composite);
 
         [OperationContract]
-        IEnumerable<ProductMkm> ProductRequest(int id);
+        ProductMkm ProductRequest(int id);
 
         //[OperationContract]
         //CompositeType GetProductUsingDataContract(CompositeType composite);
 
         [OperationContract]
-        IEnumerable<ArticleMkm> ArticleRequest(int id);
+        ArticleMkm ArticleRequest(int id);
 
         //[OperationContract]
         //CompositeType GetArticleUsingDataContract(CompositeType composite);
 
         [OperationContract]
-        IEnumerable<ExpansionMkm> ExpansionRequest(int id);
+        ExpansionMkm ExpansionRequest(int id);
 
         //[OperationContract]
         //CompositeType GetExpansionUsingDataContract(CompositeType composite);

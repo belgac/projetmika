@@ -89,10 +89,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MagicManagerClassLibrary\MagicManagerClassLibrary.csproj">
-      <Project>{721c7605-921c-46c8-9aac-fd9b290253a0}</Project>
-      <Name>MagicManagerClassLibrary</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MagicManager\MagicManager.csproj">
       <Project>{9480f7b1-9b4c-4ce5-a542-f0e7e92e111e}</Project>
       <Name>MagicManager</Name>

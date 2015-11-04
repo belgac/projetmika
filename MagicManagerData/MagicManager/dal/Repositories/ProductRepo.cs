@@ -1,4 +1,5 @@
-﻿using MagicManager.Models;
+﻿using MagicManager.dal.Interfaces;
+using MagicManager.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

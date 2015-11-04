@@ -23,15 +23,8 @@ namespace MagicManagerService
     public class Service1 : IService1
     {
 
-        private string Convertor(string requestResponse)
-        {
-            //TODO : insérer la logique du convertisseur pour transformer l'article MKM en article de notre db
-            // A FAIRE POUR CHAQUE ENTITE ou trouver méthode pour tous
-
-            //a supprimer, sert uniquement à compiler sans erreur
-            return requestResponse;
-
-        }
+        //ce service va servir à récupérer les datas de l'API MKM et à les enregistrer en DB locale
+        //il faut convertir les données reçues pour les adapter à notre db
 
         private string StreamToText(HttpWebResponse response)
         {
@@ -67,7 +60,7 @@ namespace MagicManagerService
             return StreamToText(response);
         }
 
-        public IEnumerable<ArticleMkm> ArticleRequest(int idArticle)
+        public ArticleMkm ArticleRequest(int idArticle)
         {
             //retourne l'article spécifié via IdArticle
             string method = "GET";
@@ -82,26 +75,30 @@ namespace MagicManagerService
             string text = StreamToText(response);
 
             if (text == null) return null;
-            RootArticle root = JsonConvert.DeserializeObject<RootArticle>(text);
-            return root.article as IEnumerable<ArticleMkm>;
+            ArticleMkm arti = JsonConvert.DeserializeObject<ArticleMkm>(text);
+            
+                Article myArticle = new Article();
+                myArticle.ArticleId = arti.idArticle;
+                myArticle.ProductId = arti.idProduct;
+                myArticle.isFoil = arti.isFoil;
+                myArticle.isPlayset = arti.isPlayset;
+                myArticle.isSigned = arti.isSigned;
+                myArticle.LanguageId = arti.language.idLanguage;
+                myArticle.Language.Name = arti.language.languageName;
 
-            //var collection = root.article as IEnumerable<Article>;
+                ProductMkm current = ProductRequest(arti.idProduct);
+                ProductRepo prodRepo = new ProductRepo();
+                ArticleRepo artRepo = new ArticleRepo();
+                artRepo.Add(myArticle);
+                //Product currentProd = prodRepo.FindBy(product => product.ProductId == myArticle.ProductId).FirstOrDefault();
+                //currentProd.Rarity = 
+                //countArticles not found, check parser
+                //myArticle.SiteWideCount = current.countArticles + current.countFoils;
+            
+            return arti;
+}
 
-            //foreach (Article item in collection)
-            //{
-            //    item.convertTo(mikaDbArticle article);
-            //   public bool check(int id)
-            //  {
-            //    using MagicManagerDataEntities
-            //    var q = FindBy(a => a.ArticleId == id);
-            //    return q.Any();
-            //  }
-            //    
-            //}
-
-        }
-
-        public IEnumerable<ExpansionMkm> ExpansionRequest(int id)
+        public ExpansionMkm ExpansionRequest(int id)
         {
 
             //retourne l'expansion spécifié par l'id.
@@ -118,8 +115,17 @@ namespace MagicManagerService
             string text = StreamToText(response);
 
             if (text == null) return null;
-            RootExpansion root = JsonConvert.DeserializeObject<RootExpansion>(text);
-            return root.expansion as IEnumerable<ExpansionMkm>;
+            ExpansionMkm exp = JsonConvert.DeserializeObject<ExpansionMkm>(text);
+
+                Expansion myExp = new Expansion();
+                myExp.ExpansionId = exp.idExpansion;
+                myExp.Icon = exp.icon;
+                myExp.Name = exp.name;
+
+            ExpansionRepo eRepo = new ExpansionRepo();
+            eRepo.Add(myExp);
+
+            return exp;
         }
 
         public IEnumerable<GameMkm> GameRequest()
@@ -187,11 +193,51 @@ namespace MagicManagerService
                 products.Add(product);
             }
 
-            return products.OrderBy(m => m.name.productName) as IEnumerable<ProductMkm>;
+           var collection = products.OrderBy(m => m.name.productName) as IEnumerable<ProductMkm>;
+
+            foreach (ProductMkm prod in collection)
+            {
+
+                ProductRepo prRepo = new ProductRepo();
+                ArticleRepo arRepo = new ArticleRepo();
+                DailyPriceRepo dpRepo = new DailyPriceRepo();
+                Article curAr = arRepo.FindBy(a => a.ProductId == prod.idProduct).FirstOrDefault();
+
+                Product myProd = new Product();
+                myProd.ProductId = prod.idProduct;
+                myProd.ProductName = prod.name.productName;
+                myProd.ProductUrl = prod.website;
+                myProd.ImageUrl = prod.image;
+                myProd.ExpansionId = prod.expIcon;
+                //rarity not found, check parser
+                //myProd.Rarity = prod.rarity;
+
+                prRepo.Add(myProd);
+
+                DailyPrice dp = new DailyPrice();
+                dp.Average = prod.priceGuide.AVG;
+                dp.Sell = prod.priceGuide.SELL;
+                dp.Articleid = curAr.ArticleId;
+
+                //if (isFoil) {low = LOWFOIL} else if (ex and better) {low = LOWEX+ else} else 
+                if (curAr.isFoil){
+                    dp.Low = prod.priceGuide.LOWFOIL;
+                }
+                else {
+                    dp.Low = prod.priceGuide.LOW;
+                }
+                //countArticles nor LastEdited not found, check parser
+                //dp.Count = prod.countArticles;
+                //dp.LastEdited = prod.lastEdited;
+
+                dpRepo.Add(dp);
+            }
+
+            return collection;
         }
 
 
-        public IEnumerable<ProductMkm> ProductRequest(int id)
+        public ProductMkm ProductRequest(int id)
         {
             //retourne le produit spécifié par l'Id. Pour la différence complête product/article, 
             //se reporter à la documentation ou à l'API MKM.
@@ -207,8 +253,24 @@ namespace MagicManagerService
             string text = StreamToText(response);
 
             if (text == null) return null;
-            RootProduct root = JsonConvert.DeserializeObject<RootProduct>(text);
-            return root.product as IEnumerable<ProductMkm>;
+            ProductMkm prod = JsonConvert.DeserializeObject<ProductMkm>(text);
+            
+                Product myProd = new Product();
+                myProd.ProductId = prod.idProduct;
+                myProd.ProductName = prod.name.productName;
+                myProd.ProductUrl = prod.website;
+                myProd.ImageUrl = prod.image;
+                myProd.ExpansionId = prod.expIcon;
+                //rarity not found, check parser
+                //myProd.Rarity = prod.rarity;
+
+            ProductRepo prRepo = new ProductRepo();
+            Product current = prRepo.FindBy(a => a.ProductId == myProd.ProductId).FirstOrDefault();
+            if (current == null)
+            {
+                prRepo.Add(myProd);
+            }
+            return prod;
         }
 
         public IEnumerable<ArticleMkm> StockRequest()
