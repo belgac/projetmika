@@ -45,7 +45,7 @@ namespace MagicManagerService
         //CompositeType GetArticleUsingDataContract(CompositeType composite);
 
         [OperationContract]
-        ExpansionMkm ExpansionRequest(int id);
+        List<ExpansionMkm> ExpansionRequest(int id);
 
         //[OperationContract]
         //CompositeType GetExpansionUsingDataContract(CompositeType composite);
@@ -132,11 +132,20 @@ namespace MagicManagerService
         [DataMember]
         public bool isFoil { get; set; }
         [DataMember]
+        public bool isFirstEd { get; set; }
+        [DataMember]
         public bool isSigned { get; set; }
         [DataMember]
         public bool isPlayset { get; set; }
         [DataMember]
         public bool isAltered { get; set; }
+        [DataMember]
+        public string rarity { get; set; }
+        [DataMember]
+        public PriceGuide priceGuide { get; set; }
+        [DataMember]
+        public DateTime lastEdited { get; set; }
+
     }
 
     [DataContract]
@@ -190,11 +199,15 @@ namespace MagicManagerService
     public class ProductMkm : Card
     {
         [DataMember]
-        public PriceGuide priceGuide { get; set; }
-        [DataMember]
         public bool inStock { get; set; }
         [DataMember]
         public double myPrice { get; set; }
+        [DataMember]
+        public string rarity { get; set; }
+        [DataMember]
+        public int countArticles { get; set; }
+        [DataMember]
+        public int countFoils { get; set; }
     }
 
     public class Card

@@ -76,35 +76,51 @@ namespace MagicManagerService
 
             if (text == null) return null;
             ArticleMkm arti = JsonConvert.DeserializeObject<ArticleMkm>(text);
-            
+            ArticleRepo artRepo = new ArticleRepo();
+
+            Article curAr = artRepo.FindBy(a => a.ArticleId == arti.idArticle).FirstOrDefault();
+
+            if (curAr == null)
+            {
                 Article myArticle = new Article();
+                ProductMkm current = ProductRequest(arti.idProduct);
+                ProductRepo prodRepo = new ProductRepo();
+                Product currentProd = prodRepo.FindBy(product => product.ProductId == arti.idProduct).FirstOrDefault();
+
                 myArticle.ArticleId = arti.idArticle;
                 myArticle.ProductId = arti.idProduct;
                 myArticle.isFoil = arti.isFoil;
                 myArticle.isPlayset = arti.isPlayset;
                 myArticle.isSigned = arti.isSigned;
+                myArticle.isFirstEd = arti.isFirstEd;
                 myArticle.LanguageId = arti.language.idLanguage;
                 myArticle.Language.Name = arti.language.languageName;
+                myArticle.WorkerEditTime = DateTime.Now;
+                //countArticles, countFoils : check parser
+                myArticle.SiteWideCount = current.countArticles + current.countFoils;
 
-                ProductMkm current = ProductRequest(arti.idProduct);
-                ProductRepo prodRepo = new ProductRepo();
-                ArticleRepo artRepo = new ArticleRepo();
                 artRepo.Add(myArticle);
-                //Product currentProd = prodRepo.FindBy(product => product.ProductId == myArticle.ProductId).FirstOrDefault();
-                //currentProd.Rarity = 
-                //countArticles not found, check parser
-                //myArticle.SiteWideCount = current.countArticles + current.countFoils;
-            
+                //save? via ??
+                currentProd.Rarity = current.rarity;
+            }
+            else
+            {
+                ProductMkm current = ProductRequest(arti.idProduct);
+                //countArticles, countFoils : check parser
+                curAr.SiteWideCount = current.countArticles + current.countFoils;
+                curAr.WorkerEditTime = DateTime.Now;
+            }
+
             return arti;
 }
 
-        public ExpansionMkm ExpansionRequest(int id)
+        public List<ExpansionMkm> ExpansionRequest(int idGame)
         {
 
             //retourne l'expansion spécifié par l'id.
             //Utile pour dropdowns lists du projet beta, sera certainement utile pour la configuration user
             string method = "GET";
-            string url = "https://www.mkmapi.eu/ws/v1.1/output.json/expansion/" + id;
+            string url = "https://www.mkmapi.eu/ws/v1.1/output.json/expansion/" + idGame;
 
             HttpWebRequest request = WebRequest.CreateHttp(url) as HttpWebRequest;
             OAuthHeader header = new OAuthHeader();
@@ -115,17 +131,28 @@ namespace MagicManagerService
             string text = StreamToText(response);
 
             if (text == null) return null;
-            ExpansionMkm exp = JsonConvert.DeserializeObject<ExpansionMkm>(text);
-
-                Expansion myExp = new Expansion();
-                myExp.ExpansionId = exp.idExpansion;
-                myExp.Icon = exp.icon;
-                myExp.Name = exp.name;
-
+            List<ExpansionMkm> collection = JsonConvert.DeserializeObject<List<ExpansionMkm>>(text);
             ExpansionRepo eRepo = new ExpansionRepo();
-            eRepo.Add(myExp);
 
-            return exp;
+            foreach (ExpansionMkm exp in collection)
+            {
+                Expansion curExp = eRepo.FindBy(e => e.ExpansionId == exp.idExpansion).FirstOrDefault();
+                if (curExp == null)
+                {
+                    Expansion myExp = new Expansion();
+                    myExp.ExpansionId = exp.idExpansion;
+                    myExp.Icon = exp.icon;
+                    myExp.Name = exp.name;
+                    myExp.WorkerEditTime = DateTime.Now;
+                    eRepo.Add(myExp);
+                }
+                else
+                {
+                    curExp.WorkerEditTime = DateTime.Now;
+                }
+            }
+
+            return collection;
         }
 
         public IEnumerable<GameMkm> GameRequest()
@@ -144,7 +171,33 @@ namespace MagicManagerService
 
             if (text == null) return null;
             RootGame root = JsonConvert.DeserializeObject<RootGame>(text);
-            return root.game as IEnumerable<GameMkm>;
+            var collection = root.game as IEnumerable<GameMkm>;
+
+            GameRepo gaRepo = new GameRepo();
+
+            foreach (GameMkm game in collection)
+            {
+
+                Game curGame = gaRepo.FindBy(g => g.GameId == game.idGame).FirstOrDefault();
+
+                if (curGame == null)
+                {
+                    Game myGame = new Game();
+                    myGame.GameId = game.idGame;
+                    myGame.Name = game.name;
+                    myGame.Expansions = ExpansionRequest(game.idGame) as ICollection<Expansion>;
+                    myGame.WorkerEditTime = DateTime.Now;
+
+                    gaRepo.Add(myGame);
+                }
+                else
+                {
+                    curGame.WorkerEditTime = DateTime.Now;
+                }
+
+            }
+
+            return collection;
         }
 
         public string GetData(int value)
@@ -203,34 +256,23 @@ namespace MagicManagerService
                 DailyPriceRepo dpRepo = new DailyPriceRepo();
                 Article curAr = arRepo.FindBy(a => a.ProductId == prod.idProduct).FirstOrDefault();
 
-                Product myProd = new Product();
-                myProd.ProductId = prod.idProduct;
-                myProd.ProductName = prod.name.productName;
-                myProd.ProductUrl = prod.website;
-                myProd.ImageUrl = prod.image;
-                myProd.ExpansionId = prod.expIcon;
-                //rarity not found, check parser
-                //myProd.Rarity = prod.rarity;
-
-                prRepo.Add(myProd);
-
-                DailyPrice dp = new DailyPrice();
-                dp.Average = prod.priceGuide.AVG;
-                dp.Sell = prod.priceGuide.SELL;
-                dp.Articleid = curAr.ArticleId;
-
-                //if (isFoil) {low = LOWFOIL} else if (ex and better) {low = LOWEX+ else} else 
-                if (curAr.isFoil){
-                    dp.Low = prod.priceGuide.LOWFOIL;
+                if (curAr == null)
+                {
+                    Product myProd = new Product();
+                    myProd.ProductId = prod.idProduct;
+                    myProd.ProductName = prod.name.productName;
+                    myProd.ProductUrl = prod.website;
+                    myProd.ImageUrl = prod.image;
+                    myProd.ExpansionId = prod.expIcon;
+                    myProd.WorkerEditTime = DateTime.Now;
+                    //rarity : check parser
+                    myProd.Rarity = prod.rarity;
+                    prRepo.Add(myProd);
                 }
-                else {
-                    dp.Low = prod.priceGuide.LOW;
+                else
+                {
+                    curAr.WorkerEditTime = DateTime.Now;
                 }
-                //countArticles nor LastEdited not found, check parser
-                //dp.Count = prod.countArticles;
-                //dp.LastEdited = prod.lastEdited;
-
-                dpRepo.Add(dp);
             }
 
             return collection;
@@ -253,22 +295,27 @@ namespace MagicManagerService
             string text = StreamToText(response);
 
             if (text == null) return null;
+
             ProductMkm prod = JsonConvert.DeserializeObject<ProductMkm>(text);
-            
-                Product myProd = new Product();
+            Product myProd = new Product();
+            ProductRepo prRepo = new ProductRepo();
+            Product current = prRepo.FindBy(a => a.ProductId == myProd.ProductId).FirstOrDefault();
+            if (current == null)
+            {
                 myProd.ProductId = prod.idProduct;
                 myProd.ProductName = prod.name.productName;
                 myProd.ProductUrl = prod.website;
                 myProd.ImageUrl = prod.image;
                 myProd.ExpansionId = prod.expIcon;
-                //rarity not found, check parser
-                //myProd.Rarity = prod.rarity;
+                //rarity : check parser
+                myProd.Rarity = prod.rarity;
+                myProd.WorkerEditTime = DateTime.Now;
 
-            ProductRepo prRepo = new ProductRepo();
-            Product current = prRepo.FindBy(a => a.ProductId == myProd.ProductId).FirstOrDefault();
-            if (current == null)
-            {
                 prRepo.Add(myProd);
+            }
+            else
+            {
+                current.WorkerEditTime = DateTime.Now;
             }
             return prod;
         }
@@ -291,57 +338,62 @@ namespace MagicManagerService
 
             if (text == null) return null;
             RootArticle root = JsonConvert.DeserializeObject<RootArticle>(text);
-            return root.article as IEnumerable<ArticleMkm>;
 
+            var collection = root.article as IEnumerable<ArticleMkm>;
+
+            foreach (ArticleMkm article in collection)
+            {
+                ArticleRepo arRepo = new ArticleRepo();
+                Article curAr = arRepo.FindBy(a => a.ProductId == article.idProduct).FirstOrDefault();
+
+                if (curAr != null)
+                {
+                    ProductMkm productMkm = ProductRequest(curAr.ProductId);
+                    DailyPrice dp = new DailyPrice();
+                    dp.Average = article.priceGuide.AVG;
+                    dp.Sell = article.priceGuide.SELL;
+                    dp.Articleid = curAr.ArticleId;
+
+                    //if (isFoil) {low = LOWFOIL} else if (ex and better) {low = LOWEX+ else} else 
+                    if (curAr.isFoil)
+                    {
+                        dp.Low = article.priceGuide.LOWFOIL;
+                    }
+                    else
+                    {
+                        dp.Low = article.priceGuide.LOW;
+                    }
+                    //countArticles or LastEdited : check parser
+                    dp.Count = productMkm.countArticles;
+                    dp.LastEdited = article.lastEdited;
+                    dp.WorkerEditTime = DateTime.Now;
+
+                    DailyPriceRepo dpRepo = new DailyPriceRepo();
+                    dpRepo.Add(dp);
+                }
+                else
+                {
+                    Article myArticle = new Article();
+                    myArticle.ArticleId = article.idArticle;
+                    myArticle.LanguageId = article.language.idLanguage;
+                    myArticle.isFoil = article.isFoil;
+                    myArticle.isSigned = article.isSigned;
+                    myArticle.isPlayset = article.isPlayset;
+                    myArticle.isAltered = article.isAltered;
+                    myArticle.isFirstEd = article.isFirstEd;
+                    myArticle.WorkerEditTime = DateTime.Now;
+                    //countArticles, countFoils : check parser
+                    ProductMkm curPro = ProductRequest(article.idProduct);
+                    myArticle.SiteWideCount = curPro.countArticles + curPro.countFoils;
+
+                    arRepo.Add(myArticle);
+                }
+
+           }
+
+            return collection;
         }
 
-        //public CompositeType GetAccountUsingDataContract(CompositeType composite)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public CompositeType GetArticleUsingDataContract(CompositeType composite)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public CompositeType GetDataUsingDataContract(CompositeType composite)
-        //{
-        //    if (composite == null)
-        //    {
-        //        throw new ArgumentNullException("composite");
-        //    }
-        //    if (composite.BoolValue)
-        //    {
-        //        composite.StringValue += "Suffix";
-        //    }
-        //    return composite;
-        //}
-
-        //public CompositeType GetExpansionUsingDataContract(CompositeType composite)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public CompositeType GetGameUsingDataContract(CompositeType composite)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public CompositeType GetProductByExpansionUsingDataContract(CompositeType composite)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public CompositeType GetProductUsingDataContract(CompositeType composite)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public CompositeType GetStockUsingDataContract(CompositeType composite)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         /// <summary>
         /// Class encapsulates tokens and secret to create OAuth signatures and return Authorization headers for web requests.

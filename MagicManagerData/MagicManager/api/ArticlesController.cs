@@ -35,12 +35,6 @@ namespace MagicManager
             return repo.FindBy(a => a.ArticleId == id);
         }
 
-        // GET api/<controller>/5
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
         // POST api/<controller>
         // [FromBody] : Utile que pour des page cshtml, ici on prend un objet db
         public void Post(Article article)
