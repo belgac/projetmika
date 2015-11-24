@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Les informations générales relatives à un assembly dépendent de 
 // l’ensemble d’attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
-[assembly: AssemblyTitle("magicManager")]
+[assembly: AssemblyTitle("MagicManager")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("magicManager")]
+[assembly: AssemblyProduct("MagicManager")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Le GUID suivant est pour l’ID de la typelib si ce projet est exposé à COM
-[assembly: Guid("aeb62ac0-de5e-49f0-84a6-7b0a6a2ece5c")]
+[assembly: Guid("741ebe0a-dede-4e14-85d4-918455974156")]
 
 // Les informations de version pour un assembly se composent des quatre valeurs suivantes :
 //

@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicManager", "MagicManager\MagicManager.csproj", "{9480F7B1-9B4C-4CE5-A542-F0E7E92E111E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicManagerAPI", "MagicManagerAPI\MagicManagerAPI.csproj", "{92EF59D6-D272-4D25-9468-809F8C581EB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicManager.Model", "MagicManager.Model\MagicManager.Model.csproj", "{99BC77B8-A555-4FA4-AFAA-90BBF40DE857}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicManager.MkmRequests", "MagicManager.MkmRequests\MagicManager.MkmRequests.csproj", "{FBA6D843-F8EF-49C2-8FB3-75A3FC5FDB28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicManager.DAL", "MagicManager.DAL\MagicManager.DAL.csproj", "{D9313299-3C91-4F0F-8EDD-2C59633775AD}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MagicManagerData", "MagicManagerData\MagicManagerData.sqlproj", "{6C5B6B8F-807C-4172-94F8-270A74045601}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9480F7B1-9B4C-4CE5-A542-F0E7E92E111E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9480F7B1-9B4C-4CE5-A542-F0E7E92E111E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9480F7B1-9B4C-4CE5-A542-F0E7E92E111E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9480F7B1-9B4C-4CE5-A542-F0E7E92E111E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92EF59D6-D272-4D25-9468-809F8C581EB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92EF59D6-D272-4D25-9468-809F8C581EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92EF59D6-D272-4D25-9468-809F8C581EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92EF59D6-D272-4D25-9468-809F8C581EB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99BC77B8-A555-4FA4-AFAA-90BBF40DE857}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99BC77B8-A555-4FA4-AFAA-90BBF40DE857}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99BC77B8-A555-4FA4-AFAA-90BBF40DE857}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99BC77B8-A555-4FA4-AFAA-90BBF40DE857}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBA6D843-F8EF-49C2-8FB3-75A3FC5FDB28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBA6D843-F8EF-49C2-8FB3-75A3FC5FDB28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBA6D843-F8EF-49C2-8FB3-75A3FC5FDB28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBA6D843-F8EF-49C2-8FB3-75A3FC5FDB28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9313299-3C91-4F0F-8EDD-2C59633775AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9313299-3C91-4F0F-8EDD-2C59633775AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9313299-3C91-4F0F-8EDD-2C59633775AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9313299-3C91-4F0F-8EDD-2C59633775AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C5B6B8F-807C-4172-94F8-270A74045601}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C5B6B8F-807C-4172-94F8-270A74045601}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C5B6B8F-807C-4172-94F8-270A74045601}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{6C5B6B8F-807C-4172-94F8-270A74045601}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C5B6B8F-807C-4172-94F8-270A74045601}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C5B6B8F-807C-4172-94F8-270A74045601}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

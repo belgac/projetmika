@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace magicManager
+namespace MagicManager
 {
     public class BundleConfig
     {

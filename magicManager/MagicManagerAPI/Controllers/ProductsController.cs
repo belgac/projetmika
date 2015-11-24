@@ -1,0 +1,97 @@
+﻿using MagicManager.dal.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using MagicManager.Model;
+
+namespace MagicManagerAPI.Controllers
+{
+    public class ProductsController : ApiController
+    {
+        Product[] products = new Product[]
+        {
+            new Product {ProductId = 1, ProductName = "Black Lotus", ProductUrl = "https://es.magiccardmarket.eu/Cards/Black+Lotus", ImageUrl="https://es.magiccardmarket.eu/Cards/img/3f7978563bbf3a928f32e6e3af52434d/cards/Alpha/black_lotus.jpg", Rarity="Rare", ExpansionId=1 },
+            new Product {ProductId = 2, ProductName = "White Lotus", ProductUrl = "https://es.magiccardmarket.eu/Cards/Black+Lotus", ImageUrl="https://es.magiccardmarket.eu/Cards/img/3f7978563bbf3a928f32e6e3af52434d/cards/Alpha/black_lotus.jpg", Rarity="common", ExpansionId=1 },
+            new Product {ProductId = 3, ProductName = "Grey Lotus", ProductUrl = "https://es.magiccardmarket.eu/Cards/Black+Lotus", ImageUrl="https://es.magiccardmarket.eu/Cards/img/3f7978563bbf3a928f32e6e3af52434d/cards/Alpha/black_lotus.jpg", Rarity="uncommon", ExpansionId=1 }
+        };
+
+        /// GET api/<controler>
+        /// <summary>
+        /// Retourne toute la collection de produits présent en Db
+        /// </summary>
+        /// <returns></returns>
+        [System.Web.Http.Authorize]
+        [System.Web.Http.Route("api/product/get")]
+        public IHttpActionResult Get()
+        {
+            var repo = new ProductRepo();
+            var products = repo.GetAll();//.ToList();
+            //return new string[] { "value1", "value2" };
+            if (products == null)
+            {
+                return NotFound();
+            }
+            return Ok(products);
+
+        }
+
+
+        [System.Web.Http.Route("api/product/id/get")]
+        public IHttpActionResult Get(int id)
+        {
+            var repo = new ProductRepo();
+            IQueryable<Product> prod = repo.FindBy(p => p.ProductId == id);
+
+            if (prod == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(prod);
+        }
+
+        [Route("api/product/{expansionId}/get")]
+        public IHttpActionResult GetInExp(int expansionId)
+        {
+            var repo = new ProductRepo();
+            var prodInExp = repo.FindBy(p => p.ExpansionId == expansionId);
+
+            if (prodInExp == null)
+            {
+                return NotFound();
+            }
+            return Ok(prodInExp);
+        }
+
+        [System.Web.Http.Route("api/product/{userInput}/get")]
+        public IHttpActionResult Get(string userInput)
+        {
+            var repo = new ProductRepo();
+            var prodName = repo.FindBy(p => p.ProductName == (userInput).ToString());
+
+            if (prodName == null)
+            {
+                return NotFound();
+            }
+            return Ok(prodName);
+        }
+
+        [System.Web.Http.Route("api/product/workeredittime/get")]
+        public IHttpActionResult Get(DateTime date)
+        {
+            var repo = new ProductRepo();
+            var prodWorkerDate = repo.FindBy(p => p.WorkerEditTime == date);
+
+            if (prodWorkerDate == null)
+            {
+                return NotFound();
+            }
+            return Ok(prodWorkerDate);
+
+        }
+
+    }
+}

@@ -1,28 +1,19 @@
-﻿using magicManager.DAL;
-using magicManager.Models;
-using magicManager.Models.Account;
-using magicManager.Models.Articles;
-using magicManager.Models.Expansions;
-using magicManager.Models.Game;
-using Newtonsoft.Json;
+﻿using MagicManager.dal.Repositories;
+using MagicManager.MkmRequests;
+using MagicManager.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Mvc;
 
-namespace magicManager.Controllers
+namespace MagicManager.Controllers
 {
     public class HomeController : Controller
     {
         public ActionResult Index()
         {
-
+            var repo = new ArticleRepo();
             return View();
         }
 
@@ -40,20 +31,34 @@ namespace magicManager.Controllers
             return View();
         }
 
-        public ActionResult GameRequest()
+        public ActionResult PopulateGame()
         {
-            //GET GAME
-            IGameRepository GameRepo = new GameRepository();
-
-            IEnumerable<Game> result = GameRepo.GetGame();
-            SelectList list = new SelectList(result,"idGame","name");
-            ViewBag.ddl = list;
-            if (result != null)
-            {
-                return View(result.ToList());
-            }
+            GamReq.GameRequest();
             return View();
         }
+
+        public ActionResult PopulateExpansion()
+        {
+            ExpReq.ExpansionRequest(1);
+            return View("Index");
+        }
+
+        public ActionResult PopulateProduct()
+        {
+            ExpansionRepo eRepo = new ExpansionRepo();
+            Expansion exp = eRepo.FindBy(e => e.Name == "Alpha").FirstOrDefault();
+            ProdExpReq.ProductInExpansionRequest(exp);
+            return View("Index");
+        }
+
+        public ActionResult PopulateArticles()
+        {
+            //StoReq.StockRequest();
+            DailyPriceUpdate.DailyPriceRequest();
+            return View("Index");
+        }
+
+
 
     }
 }
