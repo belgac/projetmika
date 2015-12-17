@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="8e56844d13b141a3ba9ca4c665d11f84" Name="Diagram1" ZoomLevel="67">
+        <EntityTypeShape EntityType="MagicManagerEntitiesModel.Article" Width="1.5" PointX="7.5" PointY="3.875" />
+        <EntityTypeShape EntityType="MagicManagerEntitiesModel.DailyPrice" Width="1.5" PointX="7.5" PointY="8.125" />
+        <EntityTypeShape EntityType="MagicManagerEntitiesModel.Expansion" Width="1.5" PointX="3" PointY="4.5" />
+        <EntityTypeShape EntityType="MagicManagerEntitiesModel.Game" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="MagicManagerEntitiesModel.KeyValueModels" Width="1.5" PointX="3" PointY="8.5" />
+        <EntityTypeShape EntityType="MagicManagerEntitiesModel.KeyValueTableModel" Width="1.5" PointX="0.75" PointY="8.625" />
+        <EntityTypeShape EntityType="MagicManagerEntitiesModel.KeyValueTableModels" Width="1.5" PointX="0.75" PointY="1.625" />
+        <EntityTypeShape EntityType="MagicManagerEntitiesModel.Lang" Width="1.5" PointX="5.25" PointY="0.75" />
+        <EntityTypeShape EntityType="MagicManagerEntitiesModel.MarketInfo" Width="1.5" PointX="9.75" PointY="1.25" />
+        <EntityTypeShape EntityType="MagicManagerEntitiesModel.Product" Width="1.5" PointX="5.25" PointY="4.125" />
+        <EntityTypeShape EntityType="MagicManagerEntitiesModel.StockInfo" Width="1.5" PointX="9.75" PointY="4.25" />
+        <EntityTypeShape EntityType="MagicManagerEntitiesModel.WorkerAction" Width="1.5" PointX="9.75" PointY="7.25" />
+        <AssociationConnector Association="MagicManagerEntitiesModel.FK_languageArticle" />
+        <AssociationConnector Association="MagicManagerEntitiesModel.FK_productArticle" />
+        <AssociationConnector Association="MagicManagerEntitiesModel.fk_productDailyprice" />
+        <AssociationConnector Association="MagicManagerEntitiesModel.FK_expansionProduct" />
+        <AssociationConnector Association="MagicManagerEntitiesModel.fk_gameExpansion" />
+        <AssociationConnector Association="MagicManagerEntitiesModel.fk_KeyValueTableModelKeyvaluemodels" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
